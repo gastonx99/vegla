@@ -1,0 +1,152 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+<style>
+form input,textarea {
+    font-family: Verdana, Arial, sans-serif;
+    padding: 2px;
+}
+
+form input.input-field,textarea.input-field {
+    border-style: inset;
+    border-width: 2px;
+}
+
+span.form-label {
+    font-family: Verdana, serif;
+    font-size: 14px;
+}
+
+span.missing-fields-message {
+    color: #FF5555;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+table.form-table caption {
+    text-align: left;
+}
+
+table.form-table td {
+    padding: 4px;
+}
+
+.missing-required-field {
+    border-color: #FF5555;
+}
+</style>
+
+    <form method="post" action="/cgi-bin/FormMail.pl" accept-charset="ISO-8859-1"
+        onsubmit="var originalCharset = document.charset; document.charset='ISO-8859-1'; window.onbeforeunload=function () {document.charset=originalCharset;};">
+        <div class="form-div">
+            <table class="form-table">
+            <caption>Kontakta mig bla bla bla vi hör av oss bla bla bla kul att råkas bla bla bla fint väder idag bla bla bla</caption>
+            <tr>
+                <td>
+                    <span class="form-label">Förnamn*</span>
+                </td>
+                <td>
+                    <input type="text" name="firstname" placeholder="" class="input-field" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="form-label">Efternamn*</span>
+                </td>
+                <td>
+                    <input type="text" name="lastname" placeholder="" class="input-field" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="form-label">E-postadress*</span>
+                </td>
+                <td>
+                    <input type="text" name="email" placeholder="" class="input-field" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="form-label">Telefon</span>
+                </td>
+                <td>
+                    <input type="text" name="phone" placeholder="" class="input-field" />
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top; padding-top: 5px;">
+                    <span class="form-label">Meddelande*</span>
+                </td>
+                <td>
+                    <textarea rows="6" cols="45" name="message" placeholder="" class="input-field" ></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: right">
+                    <span class="missing-fields-message hidden">Vänligen fyll i alla obligatoriska fält.</span>
+                    <input type="submit" name="Send" value="Skicka" />
+                </td>
+            </tr>
+            </table>
+        </div>
+        <input type="hidden" name="recipient" value="anders@dandel.se" /> 
+        <input type="hidden" name="subject" value="Kontakta mig" /> 
+        <input type="hidden" name="redirect" value="http://dandel.se/thankyou.html" /> 
+        <input type="hidden" name="missing_fields_redirect" value="http://dandel.se/failed.html" /> 
+        <input type="hidden" name="required" value="firstname,lastname,email,message" />
+    </form>
+<script type="text/javascript" src="./jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+var requiredFields = null;
+
+function getRequiredFields() {
+    var result = [];
+    var arr = $("form input[name='required']").val().split(",");
+    for(var i1 = 0; i1 < arr.length; i1++) {
+        var $element = $("form [name='" + arr[i1] + "']");
+        result.push($element);
+    }
+    return result;
+}
+$(document).ready(function () {
+    requiredFields = getRequiredFields();
+    
+    $(requiredFields).each(function() {
+        $(this).change(function() {
+            if($(this).val().length == 0) {
+                $(this).addClass("missing-required-field");
+            } else {
+                $(this).removeClass("missing-required-field");
+            }
+            if($(".missing-required-field").length == 0) {
+                $("span.missing-fields-message").addClass("hidden");
+            }
+        });
+    });
+    
+    
+    $("form").submit(function() {
+        for(var i1 = 0; i1 < requiredFields.length; i1++) {
+            if(requiredFields[i1].val().length == 0) {
+                requiredFields[i1].addClass("missing-required-field");
+            }
+        }
+        if($(".missing-required-field").length > 0) {
+            event.preventDefault();
+            $("span.missing-fields-message").removeClass("hidden");
+        } else {
+            $("span.missing-fields-message").addClass("hidden");
+        }
+    })
+});
+</script>
+
+    
+    
+</body>
+</html>
