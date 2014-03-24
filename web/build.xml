@@ -1,0 +1,33 @@
+<project name="vegla-web">
+
+    <macrodef name="install-macro">
+        <attribute name="domain" />
+        <attribute name="baseurl" />
+        <attribute name="recipient" />
+        <sequential>
+            <copy todir="${basedir}/build/@{domain}" filtering="true">
+                <fileset dir="${basedir}/src/main/webapp">
+                    <include name="formmail.html" />
+                </fileset>
+                <filterset>
+                    <filter token="BASEURL" value="@{baseurl}" />
+                    <filter token="RECIPIENT" value="@{recipient}" />
+                </filterset>
+            </copy>
+            <copy todir="${basedir}/build/@{domain}">
+                <fileset dir="${basedir}/src/main/webapp" includes="js/*" />
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <target name="clean">
+        <delete dir="${basedir}/build" />
+    </target>
+
+    <target name="install" description="description">
+        <install-macro domain="vegla" baseurl="http://www.vegla.se" recipient="horselhalsa@vegla.se" />
+        <install-macro domain="dandel" baseurl="http://www.dandel.se" recipient="anders@dandel.se" />
+        <install-macro domain="local" baseurl="." recipient="john.doe@local" />
+    </target>
+
+</project>
